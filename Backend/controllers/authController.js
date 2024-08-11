@@ -17,7 +17,9 @@ export const register = async (req, res) => {
     }
 
     if (user) {
-      return res.status(400).json({ message: "User Already exist" });
+      return res
+        .status(200)
+        .json({ message: "User Already exist", success: true, error: false });
     }
 
     const hasedPassword = await bcrypt.hash(password, 10);
@@ -44,11 +46,13 @@ export const register = async (req, res) => {
     }
 
     await user.save();
-    res
-      .status(200)
-      .json({ success: true, message: "User created sucessfully" });
+    res.status(200).json({
+      success: true,
+      message: "User created sucessfully",
+      error: false,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal Server error" });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -67,15 +71,17 @@ export const login = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(200)
+        .json({ message: "User not found", success: true, error: false });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     console.log(isValidPassword);
     if (!isValidPassword) {
       return res
-        .status(400)
-        .json({ status: false, message: "Invalid credentials" });
+        .status(200)
+        .json({ success: true, message: "Invalid credentials", error: false });
     }
 
     const token = jwt.sign(
@@ -85,7 +91,8 @@ export const login = async (req, res) => {
     );
 
     res.status(200).json({
-      status: true,
+      error: false,
+      success: true,
       message: "Successfully Logged In",
       token,
       id: user._id,
@@ -94,8 +101,10 @@ export const login = async (req, res) => {
       appointments: user.appointments,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ status: false, message: "Internal server error in login api" });
+    res.status(200).json({
+      success: false,
+      message: error.message,
+      error: true,
+    });
   }
 };
