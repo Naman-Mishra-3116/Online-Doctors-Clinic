@@ -33,8 +33,7 @@ function Login() {
         body: JSON.stringify(formData),
       });
 
-      const { message, success, error, token, id, role, name, appointments } =
-        await res.json();
+      const { message, success, error, token, user } = await res.json();
 
       if (message === "User not found" && success && !error) {
         toast.error("User not found, please check email once");
@@ -51,9 +50,9 @@ function Login() {
         dispatch({
           type: "LOGIN_SUCCESS",
           payload: {
-            user: name,
+            user: user,
             token: token,
-            role: role,
+            role: user.role,
           },
         });
 
@@ -66,7 +65,7 @@ function Login() {
         return;
       }
     } catch (err) {
-      toast.error(message);
+      toast.error(err.message);
       setLoading(false);
       setLoading(false);
       console.log(err.message);
