@@ -90,12 +90,16 @@ export const login = async (req, res) => {
       { expiresIn: "15d" }
     );
 
+    const {
+      password: { test },
+      ...withoutPassword
+    } = user._doc;
     res.status(200).json({
       error: false,
       success: true,
       message: "Successfully Logged In",
       token,
-      user: user,
+      user: withoutPassword,
     });
   } catch (error) {
     res.status(200).json({

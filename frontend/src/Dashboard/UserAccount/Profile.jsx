@@ -34,7 +34,7 @@ const Profile = ({ user }) => {
   };
 
   const handleFileInputChange = async (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[event.target.files.length - 1];
     const data = await uploadImageToCloudinary(file);
     setSelectedFile(data.url);
     setFormData({ ...formData, photo: data.url });
@@ -58,14 +58,15 @@ const Profile = ({ user }) => {
         body: JSON.stringify(formData),
       });
 
-      const { message, success, error } = await res.json();
+      const { message, success, error, data } = await res.json();
       console.log(message);
       if (message === "Succesfully updated" && !error && success) {
         setLoading(false);
         toast.success(message);
+        localStorage.setItem("user", JSON.stringify(data));
         setTimeout(() => {
-          navigate("/users/profile/me");
-        }, 2000);
+          window.location.href = "/users/profile/me";
+        }, 700);
       } else if (
         message === "Error in updating the user" &&
         error &&

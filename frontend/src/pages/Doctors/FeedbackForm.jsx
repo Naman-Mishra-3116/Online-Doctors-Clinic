@@ -38,6 +38,9 @@ function FeedbackForm() {
       }
       setLoading(false);
       toast.success(res.message);
+      setTimeout(() => {
+        window.location.href = `/doctors/${id}`;
+      });
     } catch (err) {
       setLoading(false);
       toast.error(err.message);
